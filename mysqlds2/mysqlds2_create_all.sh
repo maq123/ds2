@@ -1,15 +1,31 @@
+#!/bin/bash
 # mysqlds2_create_all.sh
 # start in ./ds2/mysqlds2
+set -e
+set -x
+HOST=172.18.0.10
+PASS=qq
+USER=root
+
+
+CMD="mysql --enable-local-infile -h $HOST -u $USER -p$PASS"
+
+echo "Used command : $CMD"
+
+$CMD --execute='drop database if exists DS2'
+
+cd /root/dvd_store/ds2/mysqlds2
+
 cd build
-mysql -u web --password=web < mysqlds2_create_db.sql
-mysql -u web --password=web < mysqlds2_create_ind.sql
-mysql -u web --password=web < mysqlds2_create_sp.sql
+$CMD < mysqlds2_create_db.sql
+$CMD < mysqlds2_create_ind.sql
+$CMD < mysqlds2_create_sp.sql
 cd ../load/cust
-mysql -u web --password=web < mysqlds2_load_cust.sql
+$CMD < mysqlds2_load_cust.sql
 cd ../orders
-mysql -u web --password=web < mysqlds2_load_orders.sql 
-mysql -u web --password=web < mysqlds2_load_orderlines.sql 
-mysql -u web --password=web < mysqlds2_load_cust_hist.sql 
+$CMD < mysqlds2_load_orders.sql
+$CMD < mysqlds2_load_orderlines.sql
+$CMD < mysqlds2_load_cust_hist.sql
 cd ../prod
-mysql -u web --password=web < mysqlds2_load_prod.sql 
-mysql -u web --password=web < mysqlds2_load_inv.sql 
+$CMD < mysqlds2_load_prod.sql
+$CMD < mysqlds2_load_inv.sql
